@@ -1,4 +1,4 @@
-# Git Time Control
+# Git Time Controller
 
 A tool to modify the date of the last commit in Git repositories with automatic hook integration.
 
@@ -11,7 +11,7 @@ A tool to modify the date of the last commit in Git repositories with automatic 
 ## Project Structure
 
 ```
-git-date-modifier/
+git-time-controller/
 ├── README.md
 ├── install.sh
 ├── uninstall.sh
