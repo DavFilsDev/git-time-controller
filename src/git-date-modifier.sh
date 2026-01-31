@@ -42,50 +42,6 @@ usage() {
 # Function to parse date input
 parse_date() {
     local date_input="$1"
-    local format="$2"#!/bin/bash
-
-# Git Date Modifier
-# Script to modify the date of the last commit
-
-set -e
-
-# Default values
-DATE_FORMAT="%Y-%m-%d %H:%M:%S"
-VERBOSE=false
-
-# Colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
-
-# Function to print usage
-usage() {
-    echo "Usage: $0 [OPTIONS]"
-    echo "Modify the date of the last commit in Git"
-    echo ""
-    echo "Options:"
-    echo "  --date DATE         Date to set (required)"
-    echo "                      Formats:"
-    echo "                      - ISO: '2024-01-15 14:30:00'"
-    echo "                      - Relative: '2 days ago', '1 hour ago'"
-    echo "                      - RFC2822: 'Mon, 15 Jan 2024 14:30:00 +0000'"
-    echo "  --format FORMAT     Date format (default: '%Y-%m-%d %H:%M:%S')"
-    echo "  --author-date       Change author date only"
-    echo "  --committer-date    Change committer date only (default: both)"
-    echo "  --verbose           Show detailed output"
-    echo "  --help              Show this help message"
-    echo ""
-    echo "Examples:"
-    echo "  $0 --date '2024-01-15 14:30:00'"
-    echo "  $0 --date '2 days ago'"
-    echo "  $0 --date 'Jan 15 2024 14:30' --format '%b %d %Y %H:%M'"
-}
-
-# Function to parse date input
-parse_date() {
-    local date_input="$1"
     local format="$2"
     
     # Check if it's a relative date (e.g., "2 days ago")
