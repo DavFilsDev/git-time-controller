@@ -30,12 +30,13 @@ mkdir -p "$HOOK_DIR"
 # Create or update pre-push hook
 if [ -f "$PRE_PUSH_HOOK" ]; then
     echo -e "${YELLOW}Warning: pre-push hook already exists${NC}"
-    echo "Backing up existing hook to $PRE_PUSH_HOOK.backup"
-    cp "$PRE_PUSH_HOOK" "$PRE_PUSH_HOOK.backup"
+    BACKUP_FILE="$PRE_PUSH_HOOK.backup.$(date +%Y%m%d%H%M%S)"
+    echo "Backing up existing hook to $BACKUP_FILE"
+    cp "$PRE_PUSH_HOOK" "$BACKUP_FILE"
     
     # Check if our hook is already installed
     if grep -q "Git Date Modifier Hook" "$PRE_PUSH_HOOK"; then
-        echo -e "${YELLOW}Hook already contains date modifier. Updating...${NC}"
+        echo -e "${YELLOW}Hook already contains date modifier. Skipping...${NC}"
     else
         echo "Appending date modifier to existing hook..."
         echo "" >> "$PRE_PUSH_HOOK"
@@ -51,13 +52,18 @@ if [ -f "$PRE_PUSH_HOOK" ]; then
             HOOK_SCRIPT="$(dirname "$0")/git-hook.sh"
         fi
         
-        if [ -n "$HOOK_SCRIPT" ]; then
-            echo "bash \"$HOOK_SCRIPT\"" >> "$PRE_PUSH_HOOK"
+        if [ -n "$HOOK_SCRIPT" ] && [ -f "$HOOK_SCRIPT" ]; then
+            echo "if [ -f \"$HOOK_SCRIPT\" ]; then" >> "$PRE_PUSH_HOOK"
+            echo "    bash \"$HOOK_SCRIPT\"" >> "$PRE_PUSH_HOOK"
+            echo "fi" >> "$PRE_PUSH_HOOK"
         else
             echo -e "${RED}Error: Could not find git-hook.sh${NC}"
             echo "Please install git-date-modifier globally or copy git-hook.sh to this directory"
             exit 1
         fi
+        
+        # Ensure hook remains executable
+        chmod +x "$PRE_PUSH_HOOK"
     fi
 else
     echo "Creating new pre-push hook..."
@@ -69,15 +75,15 @@ else
 # Git Pre-push Hook
 # This hook calls the Git Date Modifier
 
-HOOK_SCRIPT=""
-
 # Try to find git-hook.sh in various locations
+HOOK_SCRIPT=""
 if [ -f "/usr/local/bin/git-hook.sh" ]; then
     HOOK_SCRIPT="/usr/local/bin/git-hook.sh"
 elif [ -f "./git-hook.sh" ]; then
     HOOK_SCRIPT="./git-hook.sh"
-elif [ -f "$(dirname "$0")/../git-hook.sh" ]; then
-    HOOK_SCRIPT="$(dirname "$0")/../git-hook.sh"
+elif [ -f "$(dirname "$0")/../../git-hook.sh" ]; then
+    # When setup-hooks.sh is in project root and git-hook.sh is in same directory
+    HOOK_SCRIPT="$(dirname "$0")/../../git-hook.sh"
 fi
 
 if [ -n "$HOOK_SCRIPT" ] && [ -f "$HOOK_SCRIPT" ]; then
@@ -95,6 +101,7 @@ fi
 # Create configuration file
 if [ ! -f "$CONFIG_FILE" ]; then
     echo "Creating configuration file..."
+    mkdir -p "$(dirname "$CONFIG_FILE")"
     cat > "$CONFIG_FILE" << 'EOF'
 # Git Date Modifier Configuration
 # This file configures the behavior of the git-date-modifier hooks
@@ -128,5 +135,6 @@ echo ""
 echo "You can edit the configuration file to customize behavior:"
 echo "  - Set ENABLE_PROMPT=false to disable the prompt"
 echo "  - Change DEFAULT_DATE_FORMAT for different date formats"
+echo "  - Set VERBOSE=true for detailed output"
 echo ""
 echo "Next time you run 'git push', you'll be prompted to modify commit dates!"
