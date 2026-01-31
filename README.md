@@ -24,7 +24,14 @@ git-time-controller/
 │   ├── basic-usage.md
 │   └── advanced-usage.md
 └── tests/
-    └── test-script.sh
+    └── run-all-tests.sh
+    ├── test-core-functionality.sh
+    ├── test-environment.sh
+    ├── test-error-handling.sh
+    ├── test-hooks.sh
+    ├── test-performance.sh
+    ├── test-ui-output.sh
+    └── test-utils.sh
 ```
 
 ## Installation
