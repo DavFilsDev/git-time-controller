@@ -73,4 +73,3 @@ git-date-modifier --date "Jan 15 2024 14:30" --format "%b %d %Y %H:%M"
 
 ## License
 MIT
-```
