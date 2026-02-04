@@ -48,7 +48,10 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     source "$(dirname "${BASH_SOURCE[0]}")/test-utils.sh"
     source "$(dirname "${BASH_SOURCE[0]}")/test-environment.sh"
     
-    if setup_test_env; then
+    # Calculer SCRIPT_DIR avant d'appeler setup_test_env
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+    if setup_test_env "$SCRIPT_DIR"; then
         run_error_tests
         exit $?
     else
