@@ -127,6 +127,9 @@ while [[ $# -gt 0 ]]; do
             usage
             exit 0
             ;;
+        --quiet)
+            shift
+            ;;
         *)
             echo -e "${RED}Unknown option: $1${NC}"
             usage
