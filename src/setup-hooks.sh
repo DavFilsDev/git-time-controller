@@ -22,7 +22,6 @@ if ! git rev-parse --git-dir > /dev/null 2>&1; then
 fi
 
 echo -e "${BLUE}Setting up Git Date Modifier Hooks${NC}"
-echo "======================================="
 
 # Create hooks directory if it doesn't exist
 mkdir -p "$HOOK_DIR"

@@ -18,7 +18,6 @@ HOOK_SCRIPT="git-hook.sh"
 SETUP_SCRIPT="setup-hooks.sh"
 
 echo -e "${GREEN}Git Date Modifier Installer${NC}"
-echo "================================"
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then 
