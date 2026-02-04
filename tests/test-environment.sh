@@ -20,9 +20,15 @@ trap cleanup EXIT
 
 # Setup test environment
 setup_test_env() {
+    local source_dir="$1"
+    
+    if [ -z "$source_dir" ]; then
+        echo -e "${RED}Error: source_dir parameter is required${NC}"
+        return 1
+    fi
+    
     print_header "Setting up test environment"
     
-    # Create unique test directory
     TEST_DIR="/tmp/git-date-modifier-test-$(date +%s)"
     REPO_DIR="$TEST_DIR/repo"
     
@@ -34,21 +40,28 @@ setup_test_env() {
     git config user.email "test@example.com"
     git config user.name "Test User"
     
-    # Create initial commit with specific date
+    # Create initial commit
     echo "# Test Project" > README.md
     git add README.md
     GIT_AUTHOR_DATE="2024-01-01 00:00:00" \
     GIT_COMMITTER_DATE="2024-01-01 00:00:00" \
     git commit --quiet -m "Initial commit"
     
-    # Copy test scripts to accessible location
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-    cp "$SCRIPT_DIR/src/git-date-modifier.sh" .
-    cp "$SCRIPT_DIR/src/git-hook.sh" .
-    cp "$SCRIPT_DIR/src/setup-hooks.sh" .
+    # Vérifier que les fichiers source existent
+    if [ ! -f "$source_dir/src/git-date-modifier.sh" ]; then
+        echo -e "${RED}Error: Cannot find git-date-modifier.sh in $source_dir/src/${NC}"
+        return 1
+    fi
+    
+    # Copier depuis le répertoire source fourni en paramètre
+    cp "$source_dir/src/git-date-modifier.sh" .
+    cp "$source_dir/src/git-hook.sh" .
+    cp "$source_dir/src/setup-hooks.sh" .
+    
     chmod +x git-date-modifier.sh git-hook.sh setup-hooks.sh
     
     echo "Test repository created at: $REPO_DIR"
+    echo "Source directory: $source_dir"
     return 0
 }
 
